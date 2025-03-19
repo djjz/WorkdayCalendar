@@ -71,17 +71,16 @@ public class WorkdayCalendar : IWorkdayCalendar
         var scrollDirection = Math.Sign(incrementInWorkdays);
         var incrementsRemaining = Math.Abs(incrementInWorkdays);
 
-        // If starting date is outside work hours, snap to next day in scroll direction
         var startingTimeOfDay = TimeOnly.FromDateTime(startDate);
         var currentDate = DateOnly.FromDateTime(startDate);
         
-        /* If starting time is past (before when scrolling backwards, after if forwards)
+        /* If starting time is outside (before when scrolling backwards, after if forwards)
          * work hours, add one more increment, to let the loop handle the additional date bump */
         if ((scrollDirection > 0 && startingTimeOfDay > WorkdayStop) 
             || (scrollDirection < 0 && startingTimeOfDay < WorkdayStart))
             incrementsRemaining++;
          
-        // Scroll days
+        // Scroll days. Keep scrolling if loop ended on a holiday.
         while (incrementsRemaining >= 1 || IsHoliday(currentDate))
         {
             if (IsHoliday(currentDate))
@@ -102,7 +101,7 @@ public class WorkdayCalendar : IWorkdayCalendar
                     ? WorkdayStart.Value
                     : WorkdayStop.Value;
                 
-        // Calculate time to add
+        // Calculate time to add. Use full minute precision w/o rounding.
         var timeToAdd = Math.Truncate(
             decimal.CreateChecked((WorkdayStop - WorkdayStart).Value.TotalMinutes) * incrementsRemaining
         );
