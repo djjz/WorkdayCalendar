@@ -31,4 +31,157 @@ public class WorkdayCalendarTests
             actual: incrementedDate
         );
     }
+    
+    [Fact]
+    public void When_AddingLessThanFullWorkday_CalendarWorks()
+    {
+        IWorkdayCalendar workdayCalendar = new WorkdayCalendar();
+        workdayCalendar.SetWorkdayStartAndStop(8, 0, 16, 0);
+    
+        var incrementedDate = workdayCalendar.GetWorkdayIncrement(
+            new DateTime(2025, 03, 19, 08, 00, 00),
+            0.25m
+        );
+    
+        Assert.Equal(
+            expected: new DateTime(2025, 03, 19, 10, 00, 00),
+            actual: incrementedDate
+        );
+    }
+    
+    [Fact]
+    public void When_AddingLessThanFullWorkday_AndStartDateIsBeforeBusinessHours_CalendarWorks()
+    {
+        IWorkdayCalendar workdayCalendar = new WorkdayCalendar();
+        workdayCalendar.SetWorkdayStartAndStop(8, 0, 16, 0);
+    
+        var incrementedDate = workdayCalendar.GetWorkdayIncrement(
+            new DateTime(2025, 03, 19, 03, 00, 00),
+            0.25m
+        );
+    
+        Assert.Equal(
+            expected: new DateTime(2025, 03, 19, 10, 00, 00),
+            actual: incrementedDate
+        );
+    }
+    
+    [Fact]
+    public void When_AddingLessThanFullWorkday_AndStartDateIsAfterBusinessHours_CalendarWorks()
+    {
+        IWorkdayCalendar workdayCalendar = new WorkdayCalendar();
+        workdayCalendar.SetWorkdayStartAndStop(8, 0, 16, 0);
+    
+        var incrementedDate = workdayCalendar.GetWorkdayIncrement(
+            new DateTime(2025, 03, 19, 20, 00, 00),
+            0.25m
+        );
+    
+        Assert.Equal(
+            expected: new DateTime(2025, 03, 20, 10, 00, 00),
+            actual: incrementedDate
+        );
+    }
+    
+    [Fact]
+    public void When_AddingFullDays_CalendarWorks()
+    {
+        IWorkdayCalendar workdayCalendar = new WorkdayCalendar();
+        workdayCalendar.SetWorkdayStartAndStop(8, 0, 16, 0);
+    
+        var incrementedDate = workdayCalendar.GetWorkdayIncrement(
+            new DateTime(2025, 03, 19, 08, 00, 00),
+            4m
+        );
+    
+        Assert.Equal(
+            expected: new DateTime(2025, 03, 25, 08, 00, 00),
+            actual: incrementedDate
+        );
+    }
+    
+    [Fact]
+    public void When_AddingFullDaysAndStartDateIsBeforeBusinessHours_CalendarWorks()
+    {
+        IWorkdayCalendar workdayCalendar = new WorkdayCalendar();
+        workdayCalendar.SetWorkdayStartAndStop(8, 0, 16, 0);
+    
+        var incrementedDate = workdayCalendar.GetWorkdayIncrement(
+            new DateTime(2025, 03, 19, 00, 00, 00),
+            4m
+        );
+    
+        Assert.Equal(
+            expected: new DateTime(2025, 03, 25, 08, 00, 00),
+            actual: incrementedDate
+        );
+    }
+    
+    [Fact]
+    public void When_AddingFullDaysAndStartDateIsAfterBusinessHours_CalendarWorks()
+    {
+        IWorkdayCalendar workdayCalendar = new WorkdayCalendar();
+        workdayCalendar.SetWorkdayStartAndStop(8, 0, 16, 0);
+    
+        var incrementedDate = workdayCalendar.GetWorkdayIncrement(
+            new DateTime(2025, 03, 19, 19, 00, 00),
+            4m
+        );
+    
+        Assert.Equal(
+            expected: new DateTime(2025, 03, 26, 08, 00, 00),
+            actual: incrementedDate
+        );
+    }
+
+    [Fact]
+    public void When_CalculatingLongWorkingHours_CalendarWorks()
+    {
+        IWorkdayCalendar workdayCalendar = new WorkdayCalendar();
+        workdayCalendar.SetWorkdayStartAndStop(8, 0, 20, 0);
+    
+        var incrementedDate = workdayCalendar.GetWorkdayIncrement(
+            new DateTime(2025, 03, 19, 2, 00, 00),
+            1.5m
+        );
+    
+        Assert.Equal(
+            expected: new DateTime(2025, 03, 20, 14, 00, 00),
+            actual: incrementedDate
+        );
+    }
+    
+    [Fact]
+    public void When_AddingFullDaysAndBeginningOnSaturday_CalendarWorks()
+    {
+        IWorkdayCalendar workdayCalendar = new WorkdayCalendar();
+        workdayCalendar.SetWorkdayStartAndStop(8, 0, 16, 0);
+    
+        var incrementedDate = workdayCalendar.GetWorkdayIncrement(
+            new DateTime(2025, 03, 22, 02, 17, 00),
+            0.75m
+        );
+    
+        Assert.Equal(
+            expected: new DateTime(2025, 03, 24, 14, 00, 00),
+            actual: incrementedDate
+        );
+    }
+    
+    [Fact]
+    public void When_AddingFullDaysAndBeginningOnSunday_CalendarWorks()
+    {
+        IWorkdayCalendar workdayCalendar = new WorkdayCalendar();
+        workdayCalendar.SetWorkdayStartAndStop(8, 0, 16, 0);
+    
+        var incrementedDate = workdayCalendar.GetWorkdayIncrement(
+            new DateTime(2025, 03, 23, 08, 00, 00),
+            0.75m
+        );
+    
+        Assert.Equal(
+            expected: new DateTime(2025, 03, 24, 14, 00, 00),
+            actual: incrementedDate
+        );
+    }
 }

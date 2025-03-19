@@ -34,9 +34,15 @@ public class WorkdayCalendar : IWorkdayCalendar
     {
         ValidateHour(startHours, startMinutes);
         ValidateHour(stopHours, stopMinutes);
+        
+        var workdayStart = new TimeOnly(startHours, startMinutes);
+        var workdayStop = new TimeOnly(stopHours, stopMinutes);
 
-        WorkdayStart = new TimeOnly(startHours, startMinutes);
-        WorkdayStop = new TimeOnly(stopHours, stopMinutes);
+        if (workdayStart >= workdayStop)
+            throw new ArgumentException("Workday start has to be before workday stop");
+
+        WorkdayStart = workdayStart;
+        WorkdayStop = workdayStop;
     }
 
     private void ValidateHour(int hour, int minute)
@@ -76,7 +82,7 @@ public class WorkdayCalendar : IWorkdayCalendar
             incrementsRemaining++;
          
         // Scroll days
-        while (incrementsRemaining > 1 || IsHoliday(currentDate))
+        while (incrementsRemaining >= 1 || IsHoliday(currentDate))
         {
             if (IsHoliday(currentDate))
             {
